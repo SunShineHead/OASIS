@@ -308,7 +308,7 @@ cd project-name
 # Create environment from file
 conda env create -f environment.yml
 
-# Activate the environment
+# Activate the environment.pyml
 conda activate project-env
 
 pip install package-name
@@ -324,7 +324,7 @@ conda activate project-env
 # Install in editable mode
 pip install -e .
 
-import package_name
+import python_package_in_conda
 
 # Example usage
 result = package_name.main_function(parameter="value")
