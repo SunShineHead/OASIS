@@ -54,7 +54,7 @@ Intelligenza Artificiale 2023, 17(1), pp. 51–62.
 Copyright (C) 2021.  Giampaolo Bella, Domenico Cantone, Marianna Nicolosi Asmundo, Daniele Francesco Santamaria. This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or any later version. This program is distributed in the hope that it will be useful,  but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.  You should have received a copy of the GNU General Public License along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 # Python BehaviorManager module
-This program permits the creation of OASIS agents.
+This program permits the creation of swallacehuang-debug agents.
 
 ## Requirements </br>
    - Python interpreter version 3.7 or greater.
@@ -293,7 +293,11 @@ C) Create a new agent and a new behavior eventually related with a behavior temp
 
 
 # Create a new conda environment
-conda create -n myenv python=3.9
+conda create -n myenv python=3.9%
+
+# Create Environment
+  run: conda env create --file environment.yml
+run: conda env update --file environment.yml --name base --verbose
 
 # Activate the environment
 conda activate myenv
@@ -316,6 +320,10 @@ pip install package-name
 # Clone the repository
 git clone https://github.com/username/project-name.git
 cd python package in conda
+
+#Create Environment
+  run: conda env create --file environment.yml
+run: conda env update --file environment.yml --name base --verbose
 
 # Create conda environment
 conda env create -f environment.yml
