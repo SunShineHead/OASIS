@@ -356,7 +356,37 @@ conda activate project-env
 # Install in editable mode
 pip install -e .
 
-import python_package_in_conda
+# import python_package_in_conda
+
+# OASIS/
+ ├── .github/
+ ├── environment.yml   ← must be here if using current command
+OASIS/
+ ├── .github/
+ ├── environment.yml   ← must be here if using current command
+OASIS/
+ ├── AO2022-addendum/
+ │    └── environment.yml
+- name: Update conda environment
+  run: conda env update --file AO2022-addendum/environment.yml --name base
+- uses: actions/checkout@v4
+- name: Debug workspace
+  run: |
+    pwd
+    ls -la
+    find . -name "environment.yml"
+- run: conda env create -f environment.yml -n oasis-env
+- run: conda activate oasis-eng
+# Update conda environment
+  run: conda env update --file AO2022-addendum/environment.yml --name base
+# actions/checkout@v4
+# Debug workspace
+  run: |
+    pwd
+    ls -la
+    find . -name "environment.yml"
+- run: conda env create -f environment.yml -n oasis-env
+- run: conda activate oasis-env
 
 # Example usage
 result = package_name.main_function(parameter="value")
