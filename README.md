@@ -146,9 +146,9 @@ C) Create a new agent and a new behavior eventually related with a behavior temp
    
    Create a new agent behavior and eventually connect it to its template by typing
    
-      b.createAgentBehavior(MyAgentBehavior, MyAgentGoal, MyAgentTask,
-                            [MyAgentTaskOperator, action],
-                            [MyAgentOperatorArgument, actionArgument],
+      b.createAgentBehavior(OasisBehavior, OasisGoal, MyAgentTask,
+                            [OasisTaskOperator, action],
+                            [OasisOperatorArgument, actionArgument],
                          [
                             [MyAgentTaskObject, taskObjectProperty, agentobject1]
                          ],
@@ -302,7 +302,7 @@ conda activate myenv
 conda install -c conda-forge package-name
 
 # Clone the repository
-git clone https://github.com/username/project-name.git
+git clone https://github.com/sunshinehead/projectname.Python package in conda
 cd project-name
 
 # Create environment from file
@@ -315,7 +315,7 @@ pip install package-name
 
 # Clone the repository
 git clone https://github.com/username/project-name.git
-cd project-name
+cd python package in conda
 
 # Create conda environment
 conda env create -f environment.yml
