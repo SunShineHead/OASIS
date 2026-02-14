@@ -402,6 +402,17 @@ from package_name import load_config
 
 config = load_config('config.yaml')
 
+# Checkout code
+  uses: actions/checkout@v4
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./my-sub-folder # Change this to your subfolder name
+
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -409,16 +420,16 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4  # <--- THIS STEP IS LIKELY MISSING
 
-      - name: Setup Conda
+      # Setup Conda
         uses: conda-incubator/setup-miniconda@v3
         with:
           auto-update-conda: true
 
-      - name: Install dependencies
+      # Install dependencies
         run: conda env update --file environment.yml --name base
 
 
-name: project-env
+# project-env
 channels:
   - conda-forge
   - defaults
