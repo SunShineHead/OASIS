@@ -312,6 +312,14 @@ cd project-name
 # Create environment from file
 conda env create -f environment.yml
 
+# Setup Environment
+  uses: conda-incubator/setup-miniconda@v3
+  with:
+    activate-environment: oasis  # Don't use 'base'
+    environment-file: environment.yml
+    conda-solver: libmamba      # Faster and gives better error messages
+
+
 # Activate the environment.pyml
 conda activate project-env
 
@@ -320,10 +328,6 @@ pip install package-name
 # Clone the repository
 git clone https://github.com/username/project-name.git
 cd python package in conda
-
-#Create Environment
-  run: conda env create --file environment.yml
-run: conda env update --file environment.yml --name base --verbose
 
 # Create conda environment
 conda env create -f environment.yml
