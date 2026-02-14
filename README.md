@@ -374,6 +374,16 @@ config = {
 processor = advanced_module.Processor(**config)
 results = processor.run()
 
+steps:
+  - name: Checkout Repository
+    uses: actions/checkout@v4  # This brings your code into the runner
+
+  - name: Update Conda Environment
+    run: conda env update --file environment.yml --name base
+- name: List files for debugging
+  run: ls -R
+
+
 # Basic command
 package-name --help
 
