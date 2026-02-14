@@ -1,4 +1,9 @@
-# Python Package In Conda
+# name: base
+dependencies:
+  - python=3.10
+  - numpy
+  - pandas
+  - scikit-learn
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/downloads/)
@@ -326,11 +331,12 @@ conda activate myenv
 conda install -c conda-forge package-name
 
 # Clone the repository
-git clone https://github.com/sunshinehead/projectname.Python package in conda
+git clone https://github.com/sunshinehead/oasis projectname.Python_package_in_conda
 cd project-name
 
-# Create environment from file
-conda env create -f environment.yml
+# Create environment from git add environment.yml
+git commit -m "Add environment.yml"
+git push
 
 # Setup Environment
   uses: conda-incubator/setup-miniconda@v3
@@ -338,6 +344,13 @@ conda env create -f environment.yml
     activate-environment: oasis  # Don't use 'base'
     environment-file: environment.yml
     conda-solver: libmamba      # Faster and gives better error messages
+
+# name: base
+dependencies:
+  - python=3.10
+  - numpy
+  - pandas
+  - scikit-learn
 
 
 # Activate the environment.pyml
@@ -350,8 +363,9 @@ git clone https://github.com/username/project-name.git
 cd python package in conda
 
 # Create conda environment
-conda env create -f environment.yml
-conda activate project-env
+conda env git mv Environment.yml environment.yml
+git commit -m "Fix filename case"
+git push
 
 # Install in editable mode
 pip install -e .
