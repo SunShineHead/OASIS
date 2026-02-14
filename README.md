@@ -61,7 +61,7 @@ git push
 
 # Install dependencies
   run: conda env update --file ../environment.yml --name base
-  working-directory: swallacehuang/OASIS
+  working-directory: SunShineHead/OASIS/
 
 
 -  The Ontology for Agents, Systems and Integration of Services: recent advancements of OASIS. Giampaolo Bella, Domenico Cantone, Marianna Nicolosi-Asmundo, Daniele Francesco Santamaria. Proceedings of WOA 2022- 23nd Workshop From Objects to Agents, 1–2, September 2022, Genova, Italy, CEUR Workshop Proceedings, ISSN 1613-0073, Vol. 3261, pp.176--193.
@@ -155,6 +155,18 @@ B) (Optional) Create a new behavior template by typing </br>
      
  - Connect the behavior with the related template
  
+name: myenv
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.10
+  - numpy
+  - pandas
+  - pip
+  - pip:
+    - requests
+conda activate oasis
        b.connectAgentTemplateToBehavior(MyAgentBehaviorTemplate, MyTemplateBehavior)
        
    where: </br>
