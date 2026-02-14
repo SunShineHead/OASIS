@@ -417,8 +417,4 @@ This README includes:
 - **Project structure**
 - **Support and contact information**
 
-Would you like me to customize this further for a specific type of Python package or add any additional sections?
-
-
-Check the file
 - OASIS-MAN\Python\test\Test-BehaviorManager.py
