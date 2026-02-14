@@ -38,6 +38,22 @@ A brief, compelling description of what your project does and why it's useful.
 ```bash
 conda install -c conda-forge package-name
 
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4  # <--- THIS STEP IS LIKELY MISSING
+
+      - name: Setup Conda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+
+      - name: Install dependencies
+        run: conda env update --file environment.yml --name base
+
+
 -  The Ontology for Agents, Systems and Integration of Services: recent advancements of OASIS. Giampaolo Bella, Domenico Cantone, Marianna Nicolosi-Asmundo, Daniele Francesco Santamaria. Proceedings of WOA 2022- 23nd Workshop From Objects to Agents, 1–2, September 2022, Genova, Italy, CEUR Workshop Proceedings, ISSN 1613-0073, Vol. 3261, pp.176--193.
 -  Blockchains through ontologies: the case study of the Ethereum ERC721 standard in OASIS. Giampaolo Bella, Domenico Cantone, Cristiano Longo, Marianna Nicolosi-Asmundo, Daniele Francesco Santamaria. In D. Camacho et al. (eds.), Intelligent Distributed Computing XIV, Studies in Computational Intelligence 1026, Chapter 23,  pp. 249-259.
 -  Semantic Representation as a Key Enabler for Blockchain-Based Commerce. Giampaolo Bella, Domenico Cantone, Cristiano Longo, Marianna Nicolosi-Asmundo and Daniele Francesco Santamaria. In: K. Tserpes et al. (Eds.): GECON 2021, Lecture Note in Computer Science, Vol. 13072, pp. 191–198, Springer, 2021.
@@ -294,18 +310,6 @@ C) Create a new agent and a new behavior eventually related with a behavior temp
 jobs:
   build:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - Setup Conda
-        uses: conda-incubator/setup-miniconda@v3
-        with:
-          auto-update-conda: true
-
-      - name: Install dependencies
-        run: conda env update --file environment.yml --name base
-
 
 
 # Create a new conda environment
@@ -387,6 +391,22 @@ options:
 from package_name import load_config
 
 config = load_config('config.yaml')
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4  # <--- THIS STEP IS LIKELY MISSING
+
+      - name: Setup Conda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+
+      - name: Install dependencies
+        run: conda env update --file environment.yml --name base
+
 
 name: project-env
 channels:
