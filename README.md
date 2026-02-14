@@ -291,6 +291,22 @@ C) Create a new agent and a new behavior eventually related with a behavior temp
             where:</br>
               -  "executionOutput1", "MyAgentOutput1" represent the entity name of the action output and the agent behavior output, respectively.
 
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - Setup Conda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+
+      - name: Install dependencies
+        run: conda env update --file environment.yml --name base
+
+
 
 # Create a new conda environment
 conda create -n myenv python=3.9%
