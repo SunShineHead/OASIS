@@ -42,16 +42,26 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4  # <--- THIS STEP IS LIKELY MISSING
+      # Checkout Repository
+        uses: actions/checkout@v4
 
-      - name: Setup Conda
+      # Setup Conda
         uses: conda-incubator/setup-miniconda@v3
         with:
           auto-update-conda: true
 
-      - name: Install dependencies
-        run: conda env update --file environment.yml --name base
+      # mv environment.yml OASIS/
+git add OASIS/environment.yml
+git commit -m "Place environment.yml in OASIS folder"
+
+# mv environment.yml OASIS/
+git add OASIS/environment.yml
+git commit -m "Place environment.yml in OASIS folder"
+git push
+
+# Install dependencies
+  run: conda env update --file ../environment.yml --name base
+  working-directory: swallacehuang/OASIS
 
 
 -  The Ontology for Agents, Systems and Integration of Services: recent advancements of OASIS. Giampaolo Bella, Domenico Cantone, Marianna Nicolosi-Asmundo, Daniele Francesco Santamaria. Proceedings of WOA 2022- 23nd Workshop From Objects to Agents, 1–2, September 2022, Genova, Italy, CEUR Workshop Proceedings, ISSN 1613-0073, Vol. 3261, pp.176--193.
@@ -318,6 +328,19 @@ conda create -n myenv python=3.9%
 # Create Environment
   run: conda env create --file environment.yml
 run: conda env update --file environment.yml --name base --verbose
+
+# mv environment.yml OASIS/
+git add OASIS/environment.yml
+git commit -m "Place environment.yml in OASIS folder"
+
+# mv environment.yml OASIS/
+git add OASIS/environment.yml
+git commit -m "Place environment.yml in OASIS folder"
+git push
+
+# Install dependencies
+  run: conda env update --file ../environment.yml --name base
+  working-directory: .Represitories/OASIS
 
 # Activate the environment
 conda activate myenv
