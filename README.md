@@ -1,9 +1,4 @@
-# name: base
-dependencies:
-  - python=3.10
-  - numpy
-  - pandas
-  - scikit-learn
+# Python_package_in_conda 
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/downloads/)
@@ -454,7 +449,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./my-sub-folder # Change this to your subfolder name
+        working-directory: .Swallacehuang-debug/Oasis # Change this to your subfolder name
 
 
 jobs:
@@ -462,7 +457,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4  # <--- THIS STEP IS LIKELY MISSING
+        uses: actions/checkout@v4
+
+# base
+dependencies:
+  - python=3.10
+  - pip
+  - numpy
+  - pandas
+  - scikit-learn
 
       # Setup Conda
         uses: conda-incubator/setup-miniconda@v3
@@ -470,7 +473,8 @@ jobs:
           auto-update-conda: true
 
       # Install dependencies
-        run: conda env update --file environment.yml --name base
+  run: conda env update --file ../environment.yml --name base
+  working-directory: .Swallacehuang-Debug/OASIS
 
 
 # project-env
