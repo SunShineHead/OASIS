@@ -26,16 +26,17 @@ Option 1: Install from Conda-Forge
 conda install -c conda-forge package-name
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      # Checkout Repository
-        uses: actions/checkout@v4
+  name: oasis
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python>=3.8
+  - rdflib=6.1.1
+  - pip
+  - pip:
+    - -e .
 
-      # Setup Conda
-        uses: conda-incubator/setup-miniconda@v3
-        with:
-          auto-update-conda: true
 
       # mv environment.yml OASIS/
 git add OASIS/environment.yml
@@ -94,12 +95,6 @@ Create a BehaviorManager object by typing: </br>
 from oasis_manager import BehaviorManager
 
 B) from oasis_manager import BehaviorManager
-
-b = BehaviorManager(
-    ontology=my_ontology_obj, 
-    namespace="http://example.org/oasis#", 
-    ontologyURL="http://url-to-source.owl",
-    ontologyTemplate=template_obj,
     namespaceTemplate="http://example.org/template#",
     templateURL="http://url-to-template.owl"
 )
@@ -360,7 +355,9 @@ git commit -m "Place environment.yml in OASIS folder"
 git push
 
 - name: Path Debugger
-  run: |
+  run: |- name: Update Conda
+  run: conda env update --file .Swallacehuang-Debug/OASIS/environment.yml --name base
+
     pwd
     find . -maxdepth 3 -name "environment.yml"
 
