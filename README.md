@@ -1,41 +1,28 @@
-# Python_package_in_conda 
-
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/downloads/)
-[![Conda Version](https://img.shields.io/badge/conda-latest-green.svg)](https://docs.conda.io/)
+Python_package_in_conda
+License Python Version Conda Version
 
 A brief, compelling description of what your project does and why it's useful.
 
-## Features
-
-- 🚀 Feature 1: Brief description
-- 📊 Feature 2: Brief description
-- 🔧 Feature 3: Brief description
-- ⚡ Feature 4: Brief description
-
-## Table of Contents
-
-- [Installation](#installation)
-- [Quick Start](#quick-start)
-- [Usage](#usage)
-- [Configuration](#configuration)
-- [Documentation](#documentation)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
-
-## Installation
-
-### Prerequisites
-
-- Python 3.8 or higher
-- Conda (Miniconda or Anaconda)
-
-### Using Conda (Recommended)
-
-#### Option 1: Install from Conda-Forge
-
-```bash
+Features
+🚀 Feature 1: Brief description
+📊 Feature 2: Brief description
+🔧 Feature 3: Brief description
+⚡ Feature 4: Brief description
+Table of Contents
+Installation
+Quick Start
+Usage
+Configuration
+Documentation
+Contributing
+License
+Contact
+Installation
+Prerequisites
+Python 3.8 or higher
+Conda (Miniconda or Anaconda)
+Using Conda (Recommended)
+Option 1: Install from Conda-Forge
 conda install -c conda-forge package-name
 
 jobs:
@@ -104,7 +91,19 @@ Create a BehaviorManager object by typing: </br>
    - "namespaceTemplate" is namespace of "ontologyTemplate". You can use "None" if "xml:base" is already defined in the ontology.
    - "templateURL" is the URL of the ontology containing the behavior template.
    
-B) (Optional) Create a new behavior template by typing </br>
+from oasis_manager import BehaviorManager
+
+B) from oasis_manager import BehaviorManager
+
+b = BehaviorManager(
+    ontology=my_ontology_obj, 
+    namespace="http://example.org/oasis#", 
+    ontologyURL="http://url-to-source.owl",
+    ontologyTemplate=template_obj,
+    namespaceTemplate="http://example.org/template#",
+    templateURL="http://url-to-template.owl"
+)
+
       
       b.createAgentTemplate(agentTemplateName)
       
@@ -114,7 +113,17 @@ B) (Optional) Create a new behavior template by typing </br>
    Then, create a new agent template behavior by typing: </br>
 
 
-      b.createAgentBehaviorTemplate(MyTemplateBehavior, MyTemplateGoal, MyTemplateTask,
+      from oasis_manager import BehaviorManager
+
+b = BehaviorManager(
+    ontology=my_ontology_obj, 
+    namespace="http://example.org/oasis#", 
+    ontologyURL="http://url-to-source.owl",
+    ontologyTemplate=template_obj,
+    namespaceTemplate="http://example.org/template#",
+    templateURL="http://url-to-template.owl"
+)
+
                                      [MyTemplateTaskOperator, action], 
                                      [MyTemplateOperatorArgument, actionArgument],
                                      [
@@ -350,6 +359,12 @@ git add OASIS/environment.yml
 git commit -m "Place environment.yml in OASIS folder"
 git push
 
+- name: Path Debugger
+  run: |
+    pwd
+    find . -maxdepth 3 -name "environment.yml"
+
+
 # Install dependencies
   run: conda env update --file ../environment.yml --name base
   working-directory: .Represitories/OASIS
@@ -359,6 +374,15 @@ conda activate myenv
 
 # Install the package
 conda install -c conda-forge package-name
+
+- name: Setup Conda
+  uses: conda-incubator/setup-miniconda@v3
+  with:
+    activate-environment: oasis-env
+    environment-file: .Swallacehuang-Debug/OASIS/environment.yml # Point directly to the file
+    auto-activate-base: false
+    conda-solver: libmamba
+
 
 # Clone the repository
 git clone https://github.com/sunshinehead/oasis projectname.Python_package_in_conda
