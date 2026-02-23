@@ -469,6 +469,43 @@ pip install -e .
 
 # import python_package_in_conda
 
+name: Python Model Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"
+        # This automatically caches your pip dependencies
+        cache: 'pip' 
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        # It is best practice to use a requirements file for caching
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        pip install pytest pandas lightgbm joblib
+
+    - name: Run Fast Unit Tests (Mocks)
+      run: pytest -m fast
+
+    - name: Run Integration Tests (Real Model)
+      run: pytest -m integration
+
+
 # OASIS/
  ├── .github/
  ├── environment.yml   ← must be here if using current command
