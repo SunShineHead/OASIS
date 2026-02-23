@@ -415,6 +415,21 @@ git push
 # Activate the environment
 conda activate myenv
 
+pytest --cov=OASIS --cov-fail-under=80
+[pytest]
+addopts = --cov=OASIS --cov-report=term-missing --cov-fail-under=80
+markers =
+    fast: simple unit tests using mocks
+    integration: heavy tests loading the real model
+
+    - name: Run Tests with Coverage Gate
+      run: |
+        # This will fail the build if coverage is < 80%
+        pytest --cov=OASIS --cov-fail-under=80
+
+
+
+
 # Install the package
 conda install -c conda-forge package-name
 
