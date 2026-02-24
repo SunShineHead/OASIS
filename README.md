@@ -44,12 +44,16 @@ OASIS/ │ ├── data/ │   └── dataset.csv ├── models/ │   �
 
 Training is handled by:
 
- 
+src/oasis/cli.py
  
 models/retrain_model.py
  
 
- 
+ entry_points={
+    "console_scripts": [
+        "oasis=oasis.cli:cli",
+    ]
+}
 import numpy as np
 import pandas as pd
 import joblib
@@ -112,7 +116,7 @@ def load_model():
 
 models/trained_model.pkl
 
- 
+ oasis evaluate validation.csv,(target)
 
 Run training manually:
 
@@ -209,14 +213,39 @@ oasis train
 More commands can be added in:
 
  
-src/oasis/cli.py
+Inside  pyproject.toml :
+
+ 
+[project.scripts]
+oasis = "oasis.cli:cli"
+ 
+
+Or in setup.py:
+
+ 
+entry_points={
+    "console_scripts": [
+        "oasis=oasis.cli:cli",
+    ]
+}
  
 
  
+
+🚀 Your CLI Now Supports:
+
+✔ Model training
+✔ Model prediction
+✔ Model evaluation
+✔ Automatic feature alignment
+✔ Error checks for missing columns
+✔ Real dataset compatibility
+
+
 
 📊 Dataset Format
 
-Your dataset ( data/dataset.csv ) must include:
+Your dataset ( data/dataset.csv ) must include:feature1, feature2, ..., target
 
 Feature columns
 
