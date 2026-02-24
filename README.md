@@ -1,55 +1,135 @@
-Here's how to parametrize encoding tests in pytest:
-
-```python
-import pytest
-
-@pytest.mark.parametrize("encoding", ["utf-8", "latin-1", "utf-16", "ascii"])
-def test_encode_decode(encoding):
-    text = "hello"
-    assert text.encode(encoding).decode(encoding) == text
-
-private final ImageThread thread = new ImageThread();
-private final HashMap<String, ImageWatchers> watchers = new HashMap<>();
-private final HashMap<String, ArrayList<String>> workers = new HashMap<>();
-
-public void requestFile(final ImageFile file, WatcherReference reference) {
-  // Routes requests to image loading thread
-  // Creates ImageActor for async loading
-  // Manages download from remote sources
+{
+  "title": "GPU Cost Allocation Dashboard",
+  "uid": "gpu-cost-alloc",
+  "schemaVersion": 36,
+  "tags": ["gpu", "cost", "dcgm", "billing"],
+  "timezone": "browser",
+  "refresh": "30s",
+  "templating": {
+    "list": [
+      {
+        "name": "namespace",
+        "type": "query",
+        "datasource": "Prometheus",
+        "query": "label_values(DCGM_FI_DEV_GPU_UTIL{namespace!=\"\"}, namespace)",
+        "includeAll": true,
+        "refresh": 1
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Total GPU Cost (USD/hr)",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum(DCGM_FI_DEV_GPU_UTIL{namespace!=\"\"} / 100 * 2)",
+          "legendFormat": "Total GPU Cost"
+        }
+      ],
+      "options": { "colorMode": "value", "graphMode": "none" }
+    },
+    {
+      "id": 2,
+      "type": "table",
+      "title": "GPU Cost by Namespace (USD/hr)",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum by (namespace) (DCGM_FI_DEV_GPU_UTIL{namespace!=\"\"} / 100 * 2)"
+        }
+      ],
+      "options": { "showHeader": true }
+    },
+    {
+      "id": 3,
+      "type": "table",
+      "title": "GPU Cost by Pod (USD/hr)",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum by (pod, namespace) (DCGM_FI_DEV_GPU_UTIL{pod!=\"\"} / 100 * 2)"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "barGauge",
+      "title": "Top GPU Spenders (Namespaces)",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum by (namespace) (DCGM_FI_DEV_GPU_UTIL{namespace!=\"\"} / 100 * 2)"
+        }
+      ],
+      "options": {
+        "orientation": "horizontal",
+        "displayMode": "gradient"
+      }
+    },
+    {
+      "id": 5,
+      "type": "table",
+      "title": "GPU Memory Usage Cost Weight (Normalized)",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum by (namespace) (DCGM_FI_DEV_FB_USED{namespace!=\"\"}) / sum(DCGM_FI_DEV_FB_TOTAL)"
+        }
+      ],
+      "options": { "showHeader": true }
+    },
+    {
+      "id": 6,
+      "type": "graph",
+      "title": "GPU Power Cost (proportional, USD/hr)",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum by (namespace) ((DCGM_FI_DEV_POWER_USAGE{namespace!=\"\"} / 300) * 2)"
+        }
+      ],
+      "yaxes": [
+        { "format": "currencyUSD" },
+        { "format": "short" }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "table",
+      "title": "Wasted GPU Cost (Idle Pods)",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum by (pod, namespace) ((DCGM_FI_DEV_GPU_UTIL{pod!=\"\"} < 5) * 2)"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "stat",
+      "title": "Idle GPU Count",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "count(DCGM_FI_DEV_GPU_UTIL == 0)"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "type": "heatmap",
+      "title": "Cost-Weighted GPU Utilization Heatmap",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "(DCGM_FI_DEV_GPU_UTIL{pod!=\"\"} / 100) * 2",
+          "legendFormat": "{{pod}} ({{namespace}})"
+        }
+      ],
+      "heatmap": { "colorScheme": "interpolateTurbo" }
+    }
+  ]
 }
-@pytest.mark.parametrize("text,encoding", [
-    ("hello", "utf-8"),
-    ("café", "utf-8"),
-    ("café", "latin-1"),
-    ("日本語", "utf-8"),
-])
-def test_encoding_roundtrip(text, encoding):
-    assert text.encode(encoding).decode(encoding) == text
-
-
-@pytest.mark.parametrize("text,encoding,expected_bytes", [
-    ("A", "ascii", b"\x41"),
-    ("A", "utf-8", b"\x41"),
-    ("\u00e9", "utf-8", b"\xc3\xa9"),   # é
-    ("\u00e9", "latin-1", b"\xe9"),
-])
-def test_encoding_output(text, encoding, expected_bytes):
-    assert text.encode(encoding) == expected_bytes
-```
-
-**Key points:**
-
-- `@pytest.mark.parametrize("arg", [val1, val2])` for a single parameter
-- `@pytest.mark.parametrize("arg1,arg2", [(v1, v2), (v3, v4)])` for multiple parameters (tuples)
-- You can stack `@pytest.mark.parametrize` decorators to get the cartesian product of values
-
-**Stacked example:**
-```python
-@pytest.mark.parametrize("text", ["hello", "café"])
-@pytest.mark.parametrize("encoding", ["utf-8", "latin-1"])
-def test_stacked(text, encoding):
-    try:
-        assert text.encode(encoding).decode(encoding) == text
-    except (UnicodeEncodeError, UnicodeDecodeError):
-        pytest.skip(f"{text!r} not supported in {encoding}")
-```
