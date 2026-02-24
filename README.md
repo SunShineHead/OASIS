@@ -60,12 +60,11 @@ You need only to choose your programming language and target operating system to
 
 In general, you need to install all `TDLib` [dependencies](#dependencies), enter directory containing `TDLib` sources and compile them using CMake:
 
-```
+
 mkdir build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Release ..
-cmake --build .
-```
+cmake --build. 
 
 To build `TDLib` on low memory devices you can run [SplitSource.php](https://github.com/tdlib/td/blob/master/SplitSource.php) script
 before compiling `TDLib` source code and compile only needed targets:
