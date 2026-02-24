@@ -1,148 +1,189 @@
  
-# python package with in conda
+# python package in conda
 
+
+📘 README.md — OASIS Machine Learning Pipeline (With Badges)
+
+ 
+<p align="center">
+  https://img.shields.io/badge/python-3.10%2B-blue.svg
+  https://img.shields.io/badge/license-MIT-green.svg
+  https://img.shields.io/github/last-commit/USERNAME/OASIS
+  https://img.shields.io/github/issues/USERNAME/OASIS
+  https://img.shields.io/github/issues-pr/USERNAME/OASIS
+  https://img.shields.io/badge/code%20style-black-000.svg
+</p>
+
+---
+
+# OASIS Machine Learning Pipeline
+
+This repository contains the full end‑to‑end workflow for training, testing, and validating a LightGBM-based machine learning model.  
+The project includes:
+
+- Real dataset training pipeline  
+- Versioned model saving  
+- Automated GitHub Actions CI  
+- Model artifact uploads  
+- Pytest-based model validation  
+- CLI training command  
+
+---
+
+## 📦 Project Structure
+
+ 
+
+OASIS/ │ ├── data/ │   └── dataset.csv ├── models/ │   └── trained_model.pkl ├── src/ │   ├── train_pipeline.py │   ├── model_loader.py │   └── oasis/ │       └── cli.py ├── tests/ │   └── test_lgb_model.py └── .github/workflows/ci.yml
+
+ 
+
+---
+
+## 🚀 Training Pipeline
+
+Training is handled by:
+
+ 
+
+src/train_pipeline.py
+
+ 
+
+This script:
+
+- Loads the real dataset (`data/dataset.csv`)
+- Splits into training/testing subsets
+- Trains a LightGBM classifier
+- Saves the model AND feature names to:
+ 
+
+models/trained_model.pkl
+
+ 
+
+Run training manually:
+
+```bash
+python src/train_pipeline.py
+ 
+
+ 
+
+🧪 Testing
+
+Testing is done with pytest.
+
+The test:
+
+Loads the trained model
+
+Ensures the model produces valid predictions
+
+Checks DataFrame input/feature alignment
+
+Run tests:
+
+ 
+pytest -v
+ 
+
+ 
+
+⚙️ GitHub Actions CI Workflow
+
+Location:
+
+ 
 .github/workflows/ci.yml
  
 
+Pipeline steps:
+
+Install dependencies
+
+Retrain the model
+
+Run pytest
+
+Upload artifacts only on failure
+
  
-name: Train, Test, and Upload Artifacts
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+📤 Artifact Upload (Failure Only)
 
-jobs:
-  train-test:
-    runs-on: ubuntu-latest
+Artifacts include:
 
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+ models/trained_model.pkl 
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.10"
+Test logs
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install pytest
+Pytest XML reports
 
-    - name: Train model
-      run: python src/train_pipeline.py
+Template snippet:
 
-    - name: Run tests
-      run: pytest -v
+ 
+- name: Upload model artifact (only if failed)
+  if: failure()
+  uses: actions/upload-artifact@v3
+  with:
+    name: trained-model
+    path: models/trained_model.pkl
+ 
 
-    - name: Upload trained model artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: trained-model
-        path: models/trained_model.pkl
+ 
 
-    - name: Upload logs (pytest output, etc.)
-      uses: actions/upload-artifact@v3
-      with:
-        name: logs
-        path: |
-          ./**/*.log
-          ./**/pytest.xml
-          reports/ -------------------------------------------------------
-# Base image: NVIDIA CUDA 11.8 + cuDNN8 (Ubuntu 22.04)
-# -------------------------------------------------------
-FROM nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04
+🖥️ CLI
 
-# Avoid interactive prompts
-ENV DEBIAN_FRONTEND=noninteractive
+After installing:
 
-# -------------------------------------------------------
-# System dependencies + Python 3.11
-# -------------------------------------------------------
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        python3.11 python3.11-venv python3.11-distutils python3-pip \
-        git wget curl build-essential ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+ 
+pip install -e .
+ 
 
-# Make Python 3.11 the default python
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.11 1
+You can run:
 
-# Upgrade pip
-RUN pip install --upgrade pip
+Train model:
 
-# -------------------------------------------------------
-# PyTorch with CUDA 11.8
-# -------------------------------------------------------
-RUN pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+ 
+oasis train
+ 
 
-# -------------------------------------------------------
-# Core data-science libraries
-# -------------------------------------------------------
-RUN pip install \
-        numpy \
-        pandas \
-        scipy \
-        scikit-learn \
-        statsmodels \
-        polars \
-        matplotlib \
-        seaborn \
-        plotly \
-        altair
+More commands can be added in:
 
-# -------------------------------------------------------
-# Deep learning + AI ecosystem
-# -------------------------------------------------------
-RUN pip install \
-        transformers \
-        datasets \
-        accelerate \
-        tensorboard \
-        lightning
+ 
+src/oasis/cli.py
+ 
 
-# -------------------------------------------------------
-# Productivity + notebooks
-# -------------------------------------------------------
-RUN pip install \
-        jupyterlab \
-        ipykernel \
-        tqdm \
-        joblib \
-        python-dotenv
+ 
 
-# -------------------------------------------------------
-# Default workspace
-# -------------------------------------------------------
-WORKDIR /workspace
+📊 Dataset Format
 
-# Expose JupyterLab port
-EXPOSE 8888
+Your dataset ( data/dataset.csv ) must include:
 
-# Start container in bash by default
-CMD ["/bin/bash"]
+Feature columns
 
-# Pytest
-import pytestdef test_myfunction_deprecated():with pytest.deprecated_call():myfunction(17)
-# content of test_show_warnings.pyimport warningsdef 
-import warningsimport pytestdef test_warning():with pytest.warns(UserWarning):warnings.warn("my warning", UserWarning)
-with pytest.warns(RuntimeWarning) as record:warnings.warn("another warning", RuntimeWarning)# check that only one warning was raisedassert len(record) == 1# check that the message matchesassert record[0].message.args[0] == "another warning"
-with pytest.warns() as record:warnings.warn("user", UserWarning)warnings.warn("runtime", RuntimeWarning)assert len(record) == 2assert str(record[0].message) == "user"assert str(record[1].message) == "runtime"
-import warningsdef test_hello(recwarn):warnings.warn("hello", UserWarning)assert len(recwarn) == 1w = recwarn.pop(UserWarning)assert issubclass(w.category, UserWarning)assert str(w.message) == "hello"assert w.filenameassert w.lineno
-def test_warning():with pytest.warns((RuntimeWarning, UserWarning)):...
-api_v1():warnings.warn(UserWarning("api v1, should use functions from v2"))return 1def test_one():assert api_v1() == 1
+A target column named:
+ 
+target
+ 
 
-import numpy as np
+ 
 
-def test_model_prediction():
-    preds = model.predict(X)
+🧱 Future Enhancements
 
-    print("Preds:", preds)
+Planned upgrades:
 
-    # Basic sanity checks only
-    assert preds is not None, "Model returned None"
-    assert isinstance(preds, np.ndarray), "Model did not return a numpy array"
-    assert len(preds) == 3, "Model should return exactly 3 predictions"
+Hyperparameter optimization
 
+Model versioning
+
+Automated deployment workflow
+
+GPU‑accelerated training pipeline
+
+ 
+
+🏁 Conclusion
+
+This README provides a complete overview of the OASIS ML training + testing pipeline with integrated CI, CLI support, and artifact handling.
