@@ -3,6 +3,22 @@ License Python Version Conda Version
 
 name: Python Model Tests
 
+conda install -c conda-forge pytest
+pip install -e .
+
+name: my_env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pytest          # <--- Add it here
+  - pip
+  - pip:
+    - -e .          # Installs your local package in editable mode
+conda env update -f environment.yml
+
+
 on:
   push:
     branches: [ main ]
@@ -688,6 +704,22 @@ dependencies:
   - pip
   - pip:
     - some-pip-only-package>=1.0.0
+
+conda install -c conda-forge pytest
+pip install -e .
+
+name: my_env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pytest          # <--- Add it here
+  - pip
+  - pip:
+    - -e .          # Installs your local package in editable mode
+conda env update -f environment.yml
+
 
 project-name/
 ├── README.md
