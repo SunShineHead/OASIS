@@ -1,1 +1,3 @@
-git@github.com:dfsantamaria/OASIS.git
+  with:
+    user: guido
+    password: ${{ secrets.DEVPI_PASSWORD }}
