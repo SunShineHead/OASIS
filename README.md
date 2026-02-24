@@ -1,4 +1,24 @@
-Python_package_in_conda
+{
+    "name": ".NET User Secrets Persistence",
+    "id": "dotnet-usersecrets-persistence",
+    "version": "0.0.1",
+    "description": "Preserves .NET user secrets across dev container instances.",
+    "options": {
+    },
+    "mounts": [
+        {
+            "source": "${devcontainerId}-dotnet-usersecrets",
+            "target": "/dc/dotnet-usersecrets",
+            "type": "volume"
+        }
+    ],
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ],
+    "onCreateCommand": {
+        "dotnet-usersecrets-persistence": "/usr/local/share/daniellindemann-devcontainer-features/dotnet-usersecrets-persistence/scripts/onCreateCommand.sh"
+    }
+}
 License Python Version Conda Version
 
 name: Python Model Tests
