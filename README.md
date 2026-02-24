@@ -89,6 +89,21 @@ src/train_pipeline.py
 
 This script:
 
+src/model_loader.py
+ 
+
+ 
+import joblib
+import os
+
+MODEL_PATH = "models/trained_model.pkl"
+
+def load_model():
+    bundle = joblib.load(MODEL_PATH)
+    return bundle["model"], bundle["features"]
+ 
+
+
 - Loads the real dataset (`data/dataset.csv`)
 - Splits into training/testing subsets
 - Trains a LightGBM classifier
@@ -120,7 +135,6 @@ Ensures the model produces valid predictions
 Checks DataFrame input/feature alignment
 
 Run tests:
-
  
 pytest -v
  
@@ -136,6 +150,12 @@ Location:
  
 
 Pipeline steps:
+
+- name: Train model
+  run: python models/retrain_model.py
+
+- name: Run tests
+  run: pytest -v
 
 Install dependencies
 
