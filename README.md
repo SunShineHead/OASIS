@@ -2,6 +2,46 @@ Python_package_in_conda
 License Python Version Conda Version
 
 name: Python Model Tests
+import pandas as pd
+import numpy as np
+import lightgbm as lgb
+import pytest
+
+def test_model_prediction():
+    # 1. Setup Mock Data
+    feature_names = ['feat1', 'feat2']
+    X = np.array([[10, 10], [1, 1], [10, 11]]) # Row 2 is distinct
+    y = np.array([0, 1, 0])
+    X_df = pd.DataFrame(X, columns=feature_names)
+
+    # 2. Initialize with "Tiny Data" settings
+    test_params = {
+        "objective": "binary",
+        "min_data_in_leaf": 1,
+        "min_child_samples": 1,
+        "n_estimators": 10,
+        "deterministic": True,
+        "verbose": -1
+    }
+    
+    model = lgb.LGBMClassifier(**test_params)
+    model.fit(X_df, y)
+
+    # 3. Debug/Predict logic
+    probs = model.predict_proba(X_df)[:, 1]
+    print(f"\nClass 1 Probabilities: {probs}")
+
+    # Use a threshold or direct predict
+    predictions = (probs >= 0.5).astype(int)
+    expected_predictions = np.array([0, 1, 0])
+
+    # 4. Enhanced Assertion for Copilot Debugging
+    assert np.array_equal(predictions, expected_predictions), (
+        f"Prediction mismatch! Expected {expected_predictions} but got {predictions}. "
+        f"Probabilities were: {probs}"
+    )
+
+
 
 conda install -c conda-forge pytest
 pip install -e .
