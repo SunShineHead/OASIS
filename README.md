@@ -126,3 +126,15 @@ with pytest.warns() as record:warnings.warn("user", UserWarning)warnings.warn("r
 import warningsdef test_hello(recwarn):warnings.warn("hello", UserWarning)assert len(recwarn) == 1w = recwarn.pop(UserWarning)assert issubclass(w.category, UserWarning)assert str(w.message) == "hello"assert w.filenameassert w.lineno
 def test_warning():with pytest.warns((RuntimeWarning, UserWarning)):...
 api_v1():warnings.warn(UserWarning("api v1, should use functions from v2"))return 1def test_one():assert api_v1() == 1
+
+import numpy as np
+
+def test_model_prediction():
+    preds = model.predict(X)
+
+    print("Preds:", preds)
+
+    # Basic sanity checks only
+    assert preds is not None, "Model returned None"
+    assert isinstance(preds, np.ndarray), "Model did not return a numpy array"
+    assert len(preds) == 3, "Model should return exactly 3 predictions"
