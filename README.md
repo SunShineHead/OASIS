@@ -1,50 +1,57 @@
-# Installation 
-conda install numpy pandas matplotlib seaborn scikit-learn scipy jupyterlab
-conda install -c conda-forge xgboost lightgbm polars plotly altair
-conda install pytorch torchvision torchaudio cpuonly -c pytorch -c conda-forge
-conda install -c conda-forge tensorflow
-conda install -c conda-forge jax jaxlib
-pip install transformers
-pip install datasets
-pip install lightning
-pip install accelerate
-pip install tensorboard
-conda install pytorch torchvision torchaudio cpuonly -c pytorch -c conda-forge
-conda install -c conda-forge tensorflow
-conda install -c conda-forge jax jaxlib
-pip install transformers datasets lightning accelerate tensorboard
-name: ds-pytorch-env
-channels:
-pytorch
-conda-forge
-defaults
-dependencies:
-python=3.11
-Core data science
-numpy
-pandas
-scipy
-scikit-learn
-matplotlib
-seaborn
-plotly
-statsmodels
-jupyterlab
-ipykernel
-PyTorch (CPU)
-pytorch
-torchvision
-torchaudio
-cpuonly
-Optional utilities
-tqdm
-joblib
-pip
-pip:
-transformers
-datasets
-tensorboard
-lightning -------------------------------------------------------
+ 
+# python package with in conda
+
+.github/workflows/ci.yml
+ 
+
+ 
+name: Train, Test, and Upload Artifacts
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  train-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest
+
+    - name: Train model
+      run: python src/train_pipeline.py
+
+    - name: Run tests
+      run: pytest -v
+
+    - name: Upload trained model artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: trained-model
+        path: models/trained_model.pkl
+
+    - name: Upload logs (pytest output, etc.)
+      uses: actions/upload-artifact@v3
+      with:
+        name: logs
+        path: |
+          ./**/*.log
+          ./**/pytest.xml
+          reports/ -------------------------------------------------------
 # Base image: NVIDIA CUDA 11.8 + cuDNN8 (Ubuntu 22.04)
 # -------------------------------------------------------
 FROM nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04
