@@ -8,7 +8,15 @@ def test_encode_decode(encoding):
     text = "hello"
     assert text.encode(encoding).decode(encoding) == text
 
+private final ImageThread thread = new ImageThread();
+private final HashMap<String, ImageWatchers> watchers = new HashMap<>();
+private final HashMap<String, ArrayList<String>> workers = new HashMap<>();
 
+public void requestFile(final ImageFile file, WatcherReference reference) {
+  // Routes requests to image loading thread
+  // Creates ImageActor for async loading
+  // Manages download from remote sources
+}
 @pytest.mark.parametrize("text,encoding", [
     ("hello", "utf-8"),
     ("café", "utf-8"),
