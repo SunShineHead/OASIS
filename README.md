@@ -716,6 +716,48 @@ conda activate project-env
 # Run tests with pytest
 pytest tests/
 
+my_conda_project/
+├── conda-recipe/
+│   └── meta.yaml          # Conda build instructions
+├── src/
+│   └── my_package/
+│       ├── __init__.py
+│       └── calculator.py  # Logic to test
+├── tests/
+│   ├── conftest.py        # Shared fixtures
+│   └── test_calculator.py # Test cases
+├── pyproject.toml         # Build system & pytest config
+└── environment.yml        # Development environment
+
+def add(a: float, b: float) -> float:
+    return a + b
+
+def divide(a: float, b: float) -> float:
+    if b == 0:
+        raise ValueError("Cannot divide by zero.")
+    return a / b
+import pytest
+from my_package.calculator import add, divide
+
+@pytest.mark.parametrize("a, b, expected", [
+    (1, 2, 3),
+    (-1, 1, 0),
+    (0.1, 0.2, 0.3),  # Note: floating point logic might need pytest.approx
+])
+def test_add(a, b, expected):
+    assert add(a, b) == pytest.approx(expected)
+
+def test_divide_error():
+    with pytest.raises(ValueError, match="Cannot divide by zero."):
+        divide(10, 0)
+
+conda env create -f environment.yml
+conda activate my_env
+
+pytest --verbose
+
+
+
 # Run with coverage
 pytest --cov=package_name tests/
 
