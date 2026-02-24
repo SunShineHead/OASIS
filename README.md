@@ -1,135 +1,72 @@
-{
-  "title": "GPU Cost Allocation Dashboard",
-  "uid": "gpu-cost-alloc",
-  "schemaVersion": 36,
-  "tags": ["gpu", "cost", "dcgm", "billing"],
-  "timezone": "browser",
-  "refresh": "30s",
-  "templating": {
-    "list": [
-      {
-        "name": "namespace",
-        "type": "query",
-        "datasource": "Prometheus",
-        "query": "label_values(DCGM_FI_DEV_GPU_UTIL{namespace!=\"\"}, namespace)",
-        "includeAll": true,
-        "refresh": 1
-      }
-    ]
-  },
-  "panels": [
-    {
-      "id": 1,
-      "type": "stat",
-      "title": "Total GPU Cost (USD/hr)",
-      "datasource": "Prometheus",
-      "targets": [
-        {
-          "expr": "sum(DCGM_FI_DEV_GPU_UTIL{namespace!=\"\"} / 100 * 2)",
-          "legendFormat": "Total GPU Cost"
-        }
-      ],
-      "options": { "colorMode": "value", "graphMode": "none" }
-    },
-    {
-      "id": 2,
-      "type": "table",
-      "title": "GPU Cost by Namespace (USD/hr)",
-      "datasource": "Prometheus",
-      "targets": [
-        {
-          "expr": "sum by (namespace) (DCGM_FI_DEV_GPU_UTIL{namespace!=\"\"} / 100 * 2)"
-        }
-      ],
-      "options": { "showHeader": true }
-    },
-    {
-      "id": 3,
-      "type": "table",
-      "title": "GPU Cost by Pod (USD/hr)",
-      "datasource": "Prometheus",
-      "targets": [
-        {
-          "expr": "sum by (pod, namespace) (DCGM_FI_DEV_GPU_UTIL{pod!=\"\"} / 100 * 2)"
-        }
-      ]
-    },
-    {
-      "id": 4,
-      "type": "barGauge",
-      "title": "Top GPU Spenders (Namespaces)",
-      "datasource": "Prometheus",
-      "targets": [
-        {
-          "expr": "sum by (namespace) (DCGM_FI_DEV_GPU_UTIL{namespace!=\"\"} / 100 * 2)"
-        }
-      ],
-      "options": {
-        "orientation": "horizontal",
-        "displayMode": "gradient"
-      }
-    },
-    {
-      "id": 5,
-      "type": "table",
-      "title": "GPU Memory Usage Cost Weight (Normalized)",
-      "datasource": "Prometheus",
-      "targets": [
-        {
-          "expr": "sum by (namespace) (DCGM_FI_DEV_FB_USED{namespace!=\"\"}) / sum(DCGM_FI_DEV_FB_TOTAL)"
-        }
-      ],
-      "options": { "showHeader": true }
-    },
-    {
-      "id": 6,
-      "type": "graph",
-      "title": "GPU Power Cost (proportional, USD/hr)",
-      "datasource": "Prometheus",
-      "targets": [
-        {
-          "expr": "sum by (namespace) ((DCGM_FI_DEV_POWER_USAGE{namespace!=\"\"} / 300) * 2)"
-        }
-      ],
-      "yaxes": [
-        { "format": "currencyUSD" },
-        { "format": "short" }
-      ]
-    },
-    {
-      "id": 7,
-      "type": "table",
-      "title": "Wasted GPU Cost (Idle Pods)",
-      "datasource": "Prometheus",
-      "targets": [
-        {
-          "expr": "sum by (pod, namespace) ((DCGM_FI_DEV_GPU_UTIL{pod!=\"\"} < 5) * 2)"
-        }
-      ]
-    },
-    {
-      "id": 8,
-      "type": "stat",
-      "title": "Idle GPU Count",
-      "datasource": "Prometheus",
-      "targets": [
-        {
-          "expr": "count(DCGM_FI_DEV_GPU_UTIL == 0)"
-        }
-      ]
-    },
-    {
-      "id": 9,
-      "type": "heatmap",
-      "title": "Cost-Weighted GPU Utilization Heatmap",
-      "datasource": "Prometheus",
-      "targets": [
-        {
-          "expr": "(DCGM_FI_DEV_GPU_UTIL{pod!=\"\"} / 100) * 2",
-          "legendFormat": "{{pod}} ({{namespace}})"
-        }
-      ],
-      "heatmap": { "colorScheme": "interpolateTurbo" }
-    }
-  ]
-}
+# -------------------------------------------------------
+# Base image: NVIDIA CUDA 11.8 + cuDNN8 (Ubuntu 22.04)
+# -------------------------------------------------------
+FROM nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04
+
+# Avoid interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
+
+# -------------------------------------------------------
+# System dependencies + Python 3.11
+# -------------------------------------------------------
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        python3.11 python3.11-venv python3.11-distutils python3-pip \
+        git wget curl build-essential ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
+# Make Python 3.11 the default python
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.11 1
+
+# Upgrade pip
+RUN pip install --upgrade pip
+
+# -------------------------------------------------------
+# PyTorch with CUDA 11.8
+# -------------------------------------------------------
+RUN pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+
+# -------------------------------------------------------
+# Core data-science libraries
+# -------------------------------------------------------
+RUN pip install \
+        numpy \
+        pandas \
+        scipy \
+        scikit-learn \
+        statsmodels \
+        polars \
+        matplotlib \
+        seaborn \
+        plotly \
+        altair
+
+# -------------------------------------------------------
+# Deep learning + AI ecosystem
+# -------------------------------------------------------
+RUN pip install \
+        transformers \
+        datasets \
+        accelerate \
+        tensorboard \
+        lightning
+
+# -------------------------------------------------------
+# Productivity + notebooks
+# -------------------------------------------------------
+RUN pip install \
+        jupyterlab \
+        ipykernel \
+        tqdm \
+        joblib \
+        python-dotenv
+
+# -------------------------------------------------------
+# Default workspace
+# -------------------------------------------------------
+WORKDIR /workspace
+
+# Expose JupyterLab port
+EXPOSE 8888
+
+# Start container in bash by default
+CMD ["/bin/bash"]
