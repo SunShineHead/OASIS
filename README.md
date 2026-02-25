@@ -49,6 +49,40 @@ src/oasis/cli.py
 models/retrain_model.py
  
 
+Modify  models/retrain_model.py :
+
+ 
+import numpy as np
+import pandas as pd
+import joblib
+from lightgbm import LGBMClassifier
+import os
+from datetime import datetime
+
+MODEL_PATH = "models/trained_model.pkl"
+
+def retrain_model():
+    X_train = pd.DataFrame([
+        [0.2, 0.1],
+        [0.8, 0.9],
+        [0.3, 0.2]
+    ], columns=["f1", "f2"])
+    y_train = np.array([0, 1, 0])
+
+    model = LGBMClassifier(n_estimators=50, learning_rate=0.1, max_depth=3)
+    model.fit(X_train, y_train)
+
+    metadata = {
+        "version": datetime.utcnow().strftime("%Y.%m.%d.%H%M"),
+        "timestamp": datetime.utcnow().isoformat(),
+        "features": ["f1", "f2"]
+    }
+
+    joblib.dump({"model": model, "metadata": metadata}, MODEL_PATH)
+    print(f"Model trained and saved to {MODEL_PATH}")
+ 
+
+
  entry_points={
     "console_scripts": [
         "oasis=oasis.cli:cli",
