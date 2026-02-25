@@ -1,354 +1,370 @@
- 
-# Python package in conda
+📘 README.md — OASIS Autonomous ML Pipeline
 
-
-📘 README.md — OASIS Machine Learning Pipeline (With Badges)
-
- 
-<p align="center">
-  https://img.shields.io/badge/python-3.10%2B-blue.svg
-  https://img.shields.io/badge/license-MIT-green.svg
-  https://img.shields.io/github/last-commit/USERNAME/OASIS
-  https://img.shields.io/github/issues/USERNAME/OASIS
-  https://img.shields.io/github/issues-pr/USERNAME/OASIS
-  https://img.shields.io/badge/code%20style-black-000.svg
-</p>
-
----
-
-# OASIS Machine Learning Pipeline
-
-This repository contains the full end‑to‑end workflow for training, testing, and validating a LightGBM-based machine learning model.  
-The project includes:
-
-- Real dataset training pipeline  
-- Versioned model saving  
-- Automated GitHub Actions CI  
-- Model artifact uploads  
-- Pytest-based model validation  
-- CLI training command  
-
----
-
-## 📦 Project Structure
+A fully self‑healing, auto-fixing, auto‑versioned, auto‑releasing MLOps system.
 
  
 
-OASIS/ │ ├── data/ │   └── dataset.csv ├── models/ │   └── trained_model.pkl ├── src/ │   ├── train_pipeline.py │   ├── model_loader.py │   └── oasis/ │       └── cli.py ├── tests/ │   └── test_lgb_model.py └── .github/workflows/ci.yml
+🚀 Overview
+
+OASIS is a fully autonomous Machine Learning + DevOps hybrid pipeline featuring:
+
+Real‑dataset LightGBM training
+
+Versioned model saving
+
+Semantic versioning
+
+Full CLI toolkit ( oasis train ,  oasis version ,  oasis auto‑fix , etc.)
+
+Automatic changelog generation
+
+Automatic GitHub Releases
+
+CI Retry + Auto‑Merge system
+
+PR‑based self‑healing
+
+Auto‑close failing PRs
+
+Nightly auto‑fix pipelines
+
+Auto‑formatting, linting, diagnostics, and repository cleanup
+
+OASIS maintains itself — heals its own repo, fixes CI failures, formats code, retries CI, publishes releases, updates changelogs, and more.
 
  
 
----
-
-## 🚀 Training Pipeline
-
-Training is handled by:
-
-src/oasis/cli.py
- 
-models/retrain_model.py
- 
-
-Modify  models/retrain_model.py :
+📁 Project Structure
 
  
-import numpy as np
-import pandas as pd
-import joblib
-from lightgbm import LGBMClassifier
-import os
-from datetime import datetime
-
-MODEL_PATH = "models/trained_model.pkl"
-
-def retrain_model():
-    X_train = pd.DataFrame([
-        [0.2, 0.1],
-        [0.8, 0.9],
-        [0.3, 0.2]
-    ], columns=["f1", "f2"])
-    y_train = np.array([0, 1, 0])
-
-    model = LGBMClassifier(n_estimators=50, learning_rate=0.1, max_depth=3)
-    model.fit(X_train, y_train)
-
-    metadata = {
-        "version": datetime.utcnow().strftime("%Y.%m.%d.%H%M"),
-        "timestamp": datetime.utcnow().isoformat(),
-        "features": ["f1", "f2"]
-    }
-
-    joblib.dump({"model": model, "metadata": metadata}, MODEL_PATH)
-    print(f"Model trained and saved to {MODEL_PATH}")
+OASIS/
+│
+├── data/
+│   └── dataset.csv
+│
+├── models/
+│   ├── trained_model.pkl
+│   ├── version.txt
+│   └── history.log
+│
+├── src/
+│   ├── train_pipeline.py
+│   ├── model_loader.py
+│   └── oasis/
+│       └── cli.py
+│
+├── tests/
+│   └── test_lgb_model.py
+│
+└── .github/workflows/
+    ├── ci.yml
+    ├── oasis-auto-fix.yml
+    ├── oasis-auto-fix-pr.yml
+    ├── oasis-auto-fix-nightly.yml
+    ├── oasis-auto-merge.yml
+    ├── oasis-auto-close.yml
+    └── oasis-ci-retry.yml
  
 
+ 
 
- entry_points={
-    "console_scripts": [
-        "oasis=oasis.cli:cli",
-    ]
-}
-import numpy as np
-import pandas as pd
-import joblib
-from lightgbm import LGBMClassifier
-import os
+🧠 Training Pipeline
 
-MODEL_PATH = "models/trained_model.pkl"
+Training uses:
 
-def retrain_model():
-    # Training dataset that matches the test
-    X_train = pd.DataFrame([
-        [0.2, 0.1],
-        [0.8, 0.9],
-        [0.3, 0.2]
-    ], columns=["f1","f2"])
-
-    y_train = np.array([0, 1, 0])
-
-    model = LGBMClassifier(
-        n_estimators=50,
-        learning_rate=0.1,
-        max_depth=3
-    )
-
-    model.fit(X_train, y_train)
-
-    joblib.dump({"model": model, "features": ["f1","f2"]}, MODEL_PATH)
-    print("Model trained and saved.")
-
-if __name__ == "__main__":
-    retrain_model()
-
-
+ 
 src/train_pipeline.py
-
  
 
-This script:
+Pipeline includes:
 
-src/model_loader.py
- 
+Loading real dataset
 
- 
-import joblib
-import os
+Splitting training/test
 
-MODEL_PATH = "models/trained_model.pkl"
+Training LightGBM
 
-def load_model():
-    bundle = joblib.load(MODEL_PATH)
-    return bundle["model"], bundle["features"]
- 
+Saving model + metadata
 
+Recording semantic version
 
-- Loads the real dataset (`data/dataset.csv`)
-- Splits into training/testing subsets
-- Trains a LightGBM classifier
-- Saves the model AND feature names to:
- 
+Appending version history
 
-models/trained_model.pkl
-
- oasis evaluate validation.csv,(target)
-
-Run training manually:
-
-```bash
-python src/train_pipeline.py
- 
-Modify  src/model_loader.py :
+Train manually:
 
  
-import joblib
-import os
+oasis train
+ 
 
-MODEL_PATH = "models/trained_model.pkl"
-
-def load_model():
-    bundle = joblib.load(MODEL_PATH)
-    return bundle["model"], bundle["metadata"]
  
 
 🧪 Testing
 
-Testing is done with pytest.
+Tests validate:
 
-The test:
+Model load
 
-Loads the trained model
+Feature alignment
 
-Ensures the model produces valid predictions
+Prediction behavior
 
-Checks DataFrame input/feature alignment
+Deterministic output
 
-Run tests:
+Run manually:
+
  
 pytest -v
  
 
  
 
-⚙️ GitHub Actions CI Workflow
+⚙️ GitHub Actions Overview
 
-Location:
+OASIS includes 7 fully autonomous workflows:
 
- 
-.github/workflows/ci.yml
- 
+✔  ci.yml 
 
-Pipeline steps:
+Standard train + test workflow.
 
-- name: Train model
-  run: python models/retrain_model.py
+✔  oasis-auto-fix.yml 
 
-- name: Run tests
-  run: pytest -v
+Self-heals repository on command.
 
-Install dependencies
+✔  oasis-auto-fix-pr.yml 
 
-Retrain the model
+Creates auto-fix PRs instead of pushing changes.
 
-Run pytest
+✔  oasis-auto-fix-nightly.yml 
 
-Upload artifacts only on failure
+Runs nightly repository healing at 2AM UTC.
 
- 
+✔  oasis-auto-merge.yml 
 
-📤 Artifact Upload (Failure Only)
+Auto-merges approved auto-fix PRs only when CI is green.
 
-Artifacts include:
+✔  oasis-auto-close.yml 
 
- models/trained_model.pkl 
+Auto-closes persistent failing PRs after 3 CI failures.
 
-Test logs
+✔  oasis-ci-retry.yml 
 
-Pytest XML reports
+Retries CI up to 3 times before merging or closing.
 
-Template snippet:
-
- 
-- name: Upload model artifact (only if failed)
-  if: failure()
-  uses: actions/upload-artifact@v3
-  with:
-    name: trained-model
-    path: models/trained_model.pkl
- 
+Combined, these workflows create a self-maintaining MLOps ecosystem.
 
  
 
-🖥️ CLI
+🧵 OASIS CLI Commands
 
-After installing:
+Your CLI includes:
+
+🔧 Training & Model Management
+
+ 
+oasis train
+oasis evaluate <dataset.csv>
+oasis predict <input.csv>
+ 
+
+🔍 Model Metadata
+
+ 
+oasis version
+oasis version --json
+ 
+
+Metadata includes:
+
+Semantic version
+
+Timestamp
+
+Feature list
+
+Model size
+
+File path
+
+🧾 Version History & Releases
+
+ 
+oasis bump-version --level patch|minor|major
+oasis history
+oasis changelog
+oasis release
+ 
+
+Release automatically:
+
+Tags Git
+
+Generates changelog
+
+Uploads model to GitHub Releases
+
+🛠 Auto‑Fix & Formatting
+
+ 
+oasis auto-fix
+oasis auto-fix-strict
+oasis format
+oasis clean
+ 
+
+🩺 Diagnostics
+
+ 
+oasis doctor
+oasis doctor --json
+oasis doctor --fix
+oasis doctor --fix --commit --push
+ 
+
+Doctor checks:
+
+Python syntax
+
+YAML health
+
+GPU availability
+
+Missing dependencies
+
+Model file integrity
+
+Git status
+
+Auto-healing
+
+ 
+
+🤖 Self‑Healing DevOps Explained
+
+OASIS includes autonomous maintenance loops:
+
+1️⃣ Failure → Auto-Fix PR
+
+A CI failure triggers a repair branch & PR.
+
+2️⃣ Auto‑Retry CI
+
+OASIS retries CI up to 3 times.
+
+3️⃣ Auto‑Comment Failure Reasons
+
+Explains why CI failed directly on PR.
+
+4️⃣ Auto‑Merge
+
+If CI passes + PR is approved → merge.
+
+5️⃣ Auto‑Close
+
+If CI fails 3 times → PR closed with explanation.
+
+6️⃣ Nightly Repair
+
+Nightly self-healing runs regardless of CI.
+
+ 
+
+🚀 Release Automation
+
+Release with:
+
+ 
+oasis release
+ 
+
+This:
+
+Reads semantic version
+
+Creates Git tag
+
+Generates changelog
+
+Uploads model
+
+Publishes GitHub Release
+
+Optional:
+
+ 
+oasis release --no-confirm
+oasis release --notes "Custom message"
+ 
+
+ 
+
+🧹 Cleanup & Formatting
+
+Run:
+
+ 
+oasis clean
+oasis format
+ 
+
+Removes:
+
+Caches
+
+Build files
+
+Logs
+
+Model artifacts (optional)
+
+And formats code using:
+
+Black
+
+isort
+
+docformatter
+
+ 
+
+📦 Installation
+
+Editable mode installation:
 
  
 pip install -e .
  
 
-You can run:
-
-Train model:
-
- 
-oasis train
  
 
-More commands can be added in:
+🛟 Support
 
- 
-Inside  pyproject.toml :
-
- 
-[project.scripts]
-oasis = "oasis.cli:cli"
- 
-
-Or in setup.py:
-
- 
-entry_points={
-    "console_scripts": [
-        "oasis=oasis.cli:cli",
-    ]
-}
- 
+If you need enhancements, improvements, or more automation, extend the CLI or GitHub workflows.
 
  
 
-🚀 Your CLI Now Supports:
+🎉 Final Note
 
-✔ Model training
-✔ Model prediction
-✔ Model evaluation
-✔ Automatic feature alignment
-✔ Error checks for missing columns
-✔ Real dataset compatibility
+This README documents your complete autonomous ML + DevOps pipeline.
+Your OASIS system is now capable of:
 
+Training
 
+Testing
 
-📊 Dataset Format
+Healing
 
-Your dataset ( data/dataset.csv ) must include:feature1, feature2, ..., target
+Formatting
 
-Feature columns
+Releasing
 
-A target column named:
- 
-target
- 
+Versioning
 
- 
+Closing
 
-🧱 Future Enhancements
+Commenting
 
-Planned upgrades:
+Auto-merging
 
-Hyperparameter optimization
+Nightly cleaning
 
-Model versioning
-
-Automated deployment workflow
-
-GPU‑accelerated training pipeline
-
-Update  src/oasis/cli.py :
-
- 
-@cli.command()
-def version():
-    """Show model version info."""
-    import os
-    from src.model_loader import load_model
-
-    model, metadata = load_model()
-    size = os.path.getsize("models/trained_model.pkl") / 1024
-
-    click.echo("📦 OASIS Model Version Info")
-    click.echo("----------------------------")
-    click.echo(f"Version:        {metadata['version']}")
-    click.echo(f"Trained at:     {metadata['timestamp']}")
-    click.echo(f"Features:       {metadata['features']}")
-    click.echo(f"Model size:     {size:.2f} KB")
-    click.echo(f"Model path:     models/trained_model.pkl")
-
-oasis version
- 
-
-Example output:
-
- 
-📦 OASIS Model Version Info
-----------------------------
-Version:        2026.02.25.1530
-Trained at:     2026-02-25T15:30:12.882Z
-Features:       ['f1', 'f2']
-Model size:     52.14 KB
-Model path:     models/trained_model.pkl
- 
-
- 
-
-🏁 Conclusion
-
-This README provides a complete overview of the OASIS ML training + testing pipeline with integrated CI, CLI support, and artifact handling.
+all without human intervention.
