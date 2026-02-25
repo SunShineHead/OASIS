@@ -157,7 +157,17 @@ Run training manually:
 ```bash
 python src/train_pipeline.py
  
+Modify  src/model_loader.py :
 
+ 
+import joblib
+import os
+
+MODEL_PATH = "models/trained_model.pkl"
+
+def load_model():
+    bundle = joblib.load(MODEL_PATH)
+    return bundle["model"], bundle["metadata"]
  
 
 🧪 Testing
@@ -301,6 +311,41 @@ Model versioning
 Automated deployment workflow
 
 GPU‑accelerated training pipeline
+
+Update  src/oasis/cli.py :
+
+ 
+@cli.command()
+def version():
+    """Show model version info."""
+    import os
+    from src.model_loader import load_model
+
+    model, metadata = load_model()
+    size = os.path.getsize("models/trained_model.pkl") / 1024
+
+    click.echo("📦 OASIS Model Version Info")
+    click.echo("----------------------------")
+    click.echo(f"Version:        {metadata['version']}")
+    click.echo(f"Trained at:     {metadata['timestamp']}")
+    click.echo(f"Features:       {metadata['features']}")
+    click.echo(f"Model size:     {size:.2f} KB")
+    click.echo(f"Model path:     models/trained_model.pkl")
+
+oasis version
+ 
+
+Example output:
+
+ 
+📦 OASIS Model Version Info
+----------------------------
+Version:        2026.02.25.1530
+Trained at:     2026-02-25T15:30:12.882Z
+Features:       ['f1', 'f2']
+Model size:     52.14 KB
+Model path:     models/trained_model.pkl
+ 
 
  
 
