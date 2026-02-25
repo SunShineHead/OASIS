@@ -1,4 +1,4 @@
-📘 README.md — OASIS Autonomous ML Pipeline
+📘 README.md — Pyton Package In Conda
 
 A fully self‑healing, auto-fixing, auto‑versioned, auto‑releasing MLOps system.
 
